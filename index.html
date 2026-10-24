@@ -87,7 +87,7 @@ section { padding-block: 48px; }
 .dayhead .tag { font-size: 22px; padding: 6px 18px; }
 .dayhead .count { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 15px; color: var(--muted); letter-spacing: .04em; }
 .dayhead::after { content: ""; flex: 1; height: 3px; background: var(--ink); }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 18px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 22px; }
 .post { display: grid; grid-template-rows: auto 1fr; grid-template-columns: minmax(0, 1fr); background: var(--white); color: inherit; text-decoration: none; border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); transition: transform .15s ease, box-shadow .15s ease; min-width: 0; }
 .post:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--red); }
 .post:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
@@ -105,8 +105,8 @@ section { padding-block: 48px; }
 .who { min-width: 0; }
 .resend { justify-self: start; background: var(--yellow); color: var(--ink); font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 13px; padding: 2px 8px; }
 .cap { margin: 0; font-size: 14px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; border-top: 3px solid var(--ink); padding-top: 10px; margin-top: 2px; }
-.metrics b { display: block; font-family: var(--display); font-style: italic; font-weight: 900; font-size: 24px; white-space: nowrap; line-height: 1; font-variant-numeric: tabular-nums; }
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; border-top: 3px solid var(--ink); padding-top: 10px; margin-top: 2px; }
+.metrics b { display: block; font-family: var(--display); font-style: italic; font-weight: 900; font-size: 25px; white-space: nowrap; overflow: hidden; text-overflow: clip; line-height: 1; font-variant-numeric: tabular-nums; }
 .metrics span { font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
 .metrics div:first-child b { color: var(--red); }
 

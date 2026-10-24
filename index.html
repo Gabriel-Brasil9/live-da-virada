@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monitor da Live da Virada</title>
+<meta name="description" content="Hashtags e posts que o canal Exército do Lula mandou subir e engajar durante a Live da Virada, atualizados de hora em hora.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: coluna única centralizada; resumo, ranking de hashtags, timeline de posts agrupada por dia */
+:root {
+  --bg: #f6f5f1; --panel: #ffffff; --fg: #17181a; --muted: #62646a; --line: #e2e0d9;
+  --accent: #c8102e; --bar: #c8102e; --bar-muted: #c9c6bd; --live: #c8102e; --onlive: #ffffff;
+  --serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --sans: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #121315; --panel: #1b1c1f; --fg: #ecebe7; --muted: #a2a3a8; --line: #2e3035;
+    --accent: #ff5a6e; --bar: #ff5a6e; --bar-muted: #4a4c52; --live: #ff5a6e; --onlive: #121315; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.lv { max-width: 1180px; margin-inline: auto; padding-block: 40px 56px; display: grid; gap: 40px; }
+.lv-head { display: grid; gap: 10px; }
+.lv-eyebrow { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.lv-title { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.08; margin: 0; text-wrap: balance; }
+.lv-take { color: var(--muted); margin: 0; max-width: 70ch; }
+.lv-upd { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.lv-upd i { width: 8px; height: 8px; border-radius: 50%; background: var(--live); display: inline-block; }
+@media (prefers-reduced-motion: no-preference) { .lv-upd i { animation: pulse 2s ease-in-out infinite; } @keyframes pulse { 50% { opacity: .35; } } }
+.lv-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 12px; }
+.lv-stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px; }
+.lv-stat b { font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.lv-stat span { font-size: 13px; color: var(--muted); }
+.lv-sec { display: grid; gap: 12px; }
+.lv-sec h2 { font-size: 19px; font-weight: 600; margin: 0; }
+.lv-note { font-size: 13px; color: var(--muted); margin: 0; }
+.lv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 18px; min-width: 0; }
+.lv-tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 400; padding: 10px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+.n { text-align: right; white-space: nowrap; }
+.pos { color: var(--muted); width: 2.2rem; }
+.tag { font-weight: 600; word-break: break-word; }
+.barcell { width: 40%; min-width: 9rem; }
+.bar { display: flex; align-items: center; gap: 8px; }
+.bar i { display: block; height: 10px; border-radius: 5px; background: var(--bar-muted); min-width: 3px; }
+.bar i.top { background: var(--bar); }
+.bar em { font-style: normal; white-space: nowrap; }
+@media (max-width: 640px) { .hide-narrow { display: none; } .barcell { width: auto; min-width: 7rem; } }
+.lv-timeline { display: grid; gap: 28px; }
+.lv-day { display: grid; gap: 12px; }
+.lv-dayhead { display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.lv-dayhead strong { font-family: var(--serif); font-weight: 400; font-size: 22px; }
+.lv-dayhead span { font-size: 13px; color: var(--muted); }
+.lv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 14px; }
+.post { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; color: inherit; text-decoration: none; min-width: 0; }
+.post:hover { border-color: var(--muted); }
+.post:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.thumb { aspect-ratio: 4 / 5; background: var(--line); position: relative; overflow: hidden; max-width: 100%; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.badge { position: absolute; left: 8px; top: 8px; background: var(--panel); color: var(--fg); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
+.live { position: absolute; right: 8px; top: 8px; background: var(--live); color: var(--onlive); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
+.body { padding: 12px 14px 14px; display: grid; gap: 8px; align-content: start; }
+.time { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.time b { font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+.time span { font-size: 12px; color: var(--muted); text-align: right; }
+.who { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cap { font-size: 13px; margin: 0; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; border-top: 1px solid var(--line); padding-top: 8px; }
+.metrics div { display: grid; }
+.metrics b { font-family: var(--serif); font-weight: 400; font-size: 19px; font-variant-numeric: tabular-nums; }
+.metrics span { font-size: 12px; color: var(--muted); }
+.foot { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 4px; }
+.empty { color: var(--muted); font-size: 14px; padding: 18px 0; }
+</style>
+</head>
+<body>
+<main class="lv">
+  <header class="lv-head">
+    <span class="lv-eyebrow">Exército do Lula · canal de WhatsApp de André Janones</span>
+    <h1 class="lv-title">Live da Virada: o que o canal mandou subir e engajar</h1>
+    <p class="lv-take" id="take">Carregando os números…</p>
+    <span class="lv-upd"><i></i><span id="upd">Atualizado de hora em hora</span></span>
+  </header>
+
+  <section class="lv-stats" aria-label="Resumo">
+    <div class="lv-stat"><b id="s-hashtags">—</b><span>hashtags lançadas</span></div>
+    <div class="lv-stat"><b id="s-mencoes">—</b><span>menções no X, somadas</span></div>
+    <div class="lv-stat"><b id="s-posts">—</b><span>posts enviados para engajar</span></div>
+    <div class="lv-stat"><b id="s-curtidas">—</b><span>curtidas nesses posts, somadas</span></div>
+  </section>
+
+  <section class="lv-sec" id="hashtags">
+    <h2>Ranking das hashtags</h2>
+    <p class="lv-note">Menções e autores únicos no X desde o envio, medidos na Brandwatch. As hashtags não tinham volume antes de o canal pedir.</p>
+    <div class="lv-card"><div class="lv-tablewrap">
+      <table>
+        <thead><tr><th>#</th><th>Hashtag</th><th class="hide-narrow">Lançada em</th><th>Menções</th><th class="n">Autores únicos</th></tr></thead>
+        <tbody id="rank"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
+      </table>
+    </div></div>
+  </section>
+
+  <section class="lv-sec" id="posts">
+    <h2>Timeline da live: posts que o canal mandou engajar</h2>
+    <p class="lv-note">Do mais recente para o mais antigo, pela hora em que o canal enviou o link. Os números de cada post são os atuais. Clique para abrir.</p>
+    <div class="lv-timeline" id="timeline"><p class="empty">Carregando…</p></div>
+  </section>
+
+  <footer class="foot">
+    <span>Período: desde o início do debate da Globo, 23/10/2026 às 21h (horário de Brasília). Hashtags: Brandwatch, menções arredondadas. Posts: curtidas, comentários e visualizações lidos nos próprios posts.</span>
+    <span>A página recarrega os números sozinha a cada 10 minutos.</span>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const nf = new Intl.NumberFormat('pt-BR');
+  const cf = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
+  const num = (v) => (v === null || v === undefined || v === '' ? '—' : Number(v) >= 10000 ? cf.format(Number(v)) : nf.format(Number(v)));
+  const when = (s) => { const m = /(\d{4})-(\d\d)-(\d\d)[ T](\d\d):(\d\d)/.exec(s || ''); return m ? `${m[3]}/${m[2]} ${m[4]}h${m[5]}` : '—'; };
+  const whenUtc = (s) => { const d = new Date(s); if (!s || isNaN(d)) return null; const p = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(d); const g = (t) => (p.find((x) => x.type === t) || {}).value; return `${g('day')}/${g('month')} às ${g('hour')}h${g('minute')}`; };
+  const DIAS = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+
+  function drawRank(H) {
+    const tb = $('rank'); tb.replaceChildren();
+    if (!H.length) { const tr = tb.insertRow(); const td = tr.insertCell(); td.colSpan = 5; td.className = 'empty'; td.textContent = 'Nenhuma hashtag lançada ainda.'; return; }
+    const rows = [...H].sort((a, b) => (a.posicao || 99) - (b.posicao || 99));
+    const max = Math.max(1, ...rows.map((r) => Number(r.mencoes) || 0));
+    rows.forEach((r, i) => {
+      const tr = tb.insertRow();
+      tr.insertCell().append(el('span', 'pos', String(r.posicao)));
+      const t = tr.insertCell(); t.className = 'tag'; t.textContent = r.hashtag;
+      const w = tr.insertCell(); w.className = 'hide-narrow'; w.textContent = when(r.lancada_em);
+      const c = tr.insertCell(); c.className = 'barcell';
+      const bar = el('div', 'bar'); const f = el('i', i === 0 ? 'top' : ''); f.style.width = `${(70 * (Number(r.mencoes) || 0)) / max}%`;
+      bar.append(f, el('em', '', num(r.mencoes))); c.append(bar);
+      const a = tr.insertCell(); a.className = 'n'; a.textContent = num(r.autores_unicos);
+    });
+  }
+
+  function metric(v, label) { const d = el('div'); d.append(el('b', '', num(v)), el('span', '', label)); return d; }
+
+  function card(r) {
+    const a = el('a', 'post'); a.href = /^https:\/\//.test(r.link || '') ? r.link : '#'; a.target = '_blank'; a.rel = 'noopener';
+    const th = el('div', 'thumb');
+    if (typeof r.imagem === 'string' && r.imagem.startsWith('data:image/')) { const img = el('img'); img.src = r.imagem; img.alt = `Post de ${r.autor || r.rede || ''}`; img.loading = 'lazy'; th.append(img); }
+    th.append(el('span', 'badge', [r.rede, r.formato].filter(Boolean).join(' · ')));
+    if (r.assistindo_agora) th.append(el('span', 'live', `${num(r.assistindo_agora)} ao vivo`));
+    const b = el('div', 'body');
+    const tm = /(\d\d):(\d\d)$/.exec(String(r.enviado_em || ''));
+    const time = el('div', 'time');
+    time.append(el('b', '', tm ? `${tm[1]}h${tm[2]}` : '—'), el('span', '', Number(r.vezes_no_canal) > 1 ? `enviado pelo canal · reenviado, ${r.vezes_no_canal} vezes no total` : 'enviado pelo canal'));
+    const m = el('div', 'metrics');
+    const hasC = r.comentarios !== null && r.comentarios !== undefined;
+    m.append(metric(r.curtidas, 'curtidas'));
+    m.append(hasC ? metric(r.comentarios, 'comentários') : metric(r.visualizacoes, 'visualizações'));
+    m.append(hasC ? metric(r.visualizacoes, r.rede === 'YouTube' ? 'visualizações' : 'reproduções') : el('div'));
+    b.append(time, el('div', 'who', r.autor || r.rede || ''), el('p', 'cap', r.legenda || ''), m);
+    a.append(th, b); return a;
+  }
+
+  function drawTimeline(P) {
+    const box = $('timeline'); box.replaceChildren();
+    if (!P.length) { box.append(el('p', 'empty', 'Nenhum post enviado ainda.')); return; }
+    const rows = [...P].sort((x, y) => String(y.enviado_em || '').localeCompare(String(x.enviado_em || '')));
+    const groups = new Map();
+    rows.forEach((r) => { const k = String(r.enviado_em || '').slice(0, 10); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(r); });
+    groups.forEach((list, day) => {
+      const sec = el('div', 'lv-day'); const head = el('div', 'lv-dayhead');
+      const m = /(\d{4})-(\d\d)-(\d\d)/.exec(day);
+      const dn = m ? DIAS[new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).getUTCDay()] : '';
+      head.append(el('strong', '', m ? `${dn}, ${m[3]}/${m[2]}` : 'Sem data'), el('span', '', `${list.length} ${list.length === 1 ? 'post' : 'posts'}`));
+      const g = el('div', 'lv-grid'); list.forEach((r) => g.append(card(r)));
+      sec.append(head, g); box.append(sec);
+    });
+  }
+
+  async function load() {
+    try {
+      const t = Date.now();
+      const [H, P] = await Promise.all([
+        fetch(`data/hashtags.json?t=${t}`, { cache: 'no-store' }).then((r) => r.json()),
+        fetch(`data/posts.json?t=${t}`, { cache: 'no-store' }).then((r) => r.json()),
+      ]);
+      const mencoes = H.reduce((s, r) => s + (Number(r.mencoes) || 0), 0);
+      const curtidas = P.reduce((s, r) => s + (Number(r.curtidas) || 0), 0);
+      $('s-hashtags').textContent = nf.format(H.length);
+      $('s-mencoes').textContent = num(mencoes);
+      $('s-posts').textContent = nf.format(P.length);
+      $('s-curtidas').textContent = num(curtidas);
+      const top = [...H].sort((a, b) => (b.mencoes || 0) - (a.mencoes || 0))[0];
+      $('take').textContent = top
+        ? `Desde o início do debate da Globo (23/10, 21h), o canal lançou ${H.length} hashtags e mandou engajar ${P.length} posts. A mais forte no X é ${top.hashtag}, com ${num(top.mencoes)} menções.`
+        : `Desde o início do debate da Globo (23/10, 21h), o canal mandou engajar ${P.length} posts.`;
+      const at = [...H, ...P].map((r) => r.atualizado_em).filter(Boolean).sort().pop();
+      const w = whenUtc(at); $('upd').textContent = w ? `Números atualizados em ${w} · atualiza de hora em hora` : 'Atualizado de hora em hora';
+      drawRank(H); drawTimeline(P);
+    } catch (e) {
+      $('take').textContent = 'Não foi possível carregar os números agora. Tente recarregar a página em alguns minutos.';
+    }
+  }
+  load();
+  setInterval(load, 10 * 60 * 1000);
+})();
+</script>
+</body>
+</html>

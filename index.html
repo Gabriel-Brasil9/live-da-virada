@@ -5,147 +5,190 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Monitor da Live da Virada</title>
 <meta name="description" content="Hashtags e posts que o canal Exército do Lula mandou subir e engajar durante a Live da Virada, atualizados de hora em hora.">
+<meta name="theme-color" content="#e4002b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,800;1,700;1,800;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout: coluna única centralizada; resumo, ranking de hashtags, timeline de posts agrupada por dia */
+/* Visual de campanha: faixa vermelha com tipografia condensada em itálico, etiquetas inclinadas em amarelo,
+   ranking em fundo escuro, linha do tempo em fundo claro. Um só tema, cores explícitas. */
 :root {
-  --bg: #f6f5f1; --panel: #ffffff; --fg: #17181a; --muted: #62646a; --line: #e2e0d9;
-  --accent: #c8102e; --bar: #c8102e; --bar-muted: #c9c6bd; --live: #c8102e; --onlive: #ffffff;
-  --serif: "Fraunces", Georgia, "Times New Roman", serif;
-  --sans: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --red: #e4002b; --red-dark: #b8001f; --yellow: #ffd200; --green: #00a443;
+  --ink: #141414; --ink-2: #242424; --paper: #f7f4ee; --white: #ffffff; --muted: #6b6760; --line: #e3ded4;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #121315; --panel: #1b1c1f; --fg: #ecebe7; --muted: #a2a3a8; --line: #2e3035;
-    --accent: #ff5a6e; --bar: #ff5a6e; --bar-muted: #4a4c52; --live: #ff5a6e; --onlive: #121315; color-scheme: dark; }
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.45;
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.lv { max-width: 1180px; margin-inline: auto; padding-block: 40px 56px; display: grid; gap: 40px; }
-.lv-head { display: grid; gap: 10px; }
-.lv-eyebrow { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-.lv-title { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.08; margin: 0; text-wrap: balance; }
-.lv-take { color: var(--muted); margin: 0; max-width: 70ch; }
-.lv-upd { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-.lv-upd i { width: 8px; height: 8px; border-radius: 50%; background: var(--live); display: inline-block; }
-@media (prefers-reduced-motion: no-preference) { .lv-upd i { animation: pulse 2s ease-in-out infinite; } @keyframes pulse { 50% { opacity: .35; } } }
-.lv-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 12px; }
-.lv-stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px; }
-.lv-stat b { font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.lv-stat span { font-size: 13px; color: var(--muted); }
-.lv-sec { display: grid; gap: 12px; }
-.lv-sec h2 { font-size: 19px; font-weight: 600; margin: 0; }
-.lv-note { font-size: 13px; color: var(--muted); margin: 0; }
-.lv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 18px; min-width: 0; }
-.lv-tablewrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 400; padding: 10px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-tr:last-child td { border-bottom: none; }
-.n { text-align: right; white-space: nowrap; }
-.pos { color: var(--muted); width: 2.2rem; }
-.tag { font-weight: 600; word-break: break-word; }
-.barcell { width: 40%; min-width: 9rem; }
-.bar { display: flex; align-items: center; gap: 8px; }
-.bar i { display: block; height: 10px; border-radius: 5px; background: var(--bar-muted); min-width: 3px; }
-.bar i.top { background: var(--bar); }
-.bar em { font-style: normal; white-space: nowrap; }
-@media (max-width: 640px) { .hide-narrow { display: none; } .barcell { width: auto; min-width: 7rem; } }
-.lv-timeline { display: grid; gap: 28px; }
-.lv-day { display: grid; gap: 12px; }
-.lv-dayhead { display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
-.lv-dayhead strong { font-family: var(--serif); font-weight: 400; font-size: 22px; }
-.lv-dayhead span { font-size: 13px; color: var(--muted); }
-.lv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 14px; }
-.post { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; color: inherit; text-decoration: none; min-width: 0; }
-.post:hover { border-color: var(--muted); }
-.post:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
-.thumb { aspect-ratio: 4 / 5; background: var(--line); position: relative; overflow: hidden; max-width: 100%; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; }
+.wrap { max-width: 1200px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.d { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: .9; }
+
+/* faixa de abertura */
+.hero { position: relative; overflow: hidden; background: var(--red); color: var(--white); padding-block: 34px 0; }
+.hero::before { content: "VIRADA"; position: absolute; right: -2vw; bottom: -0.18em; font-family: var(--display); font-style: italic; font-weight: 900;
+  font-size: clamp(140px, 26vw, 360px); line-height: 1; color: rgba(255,255,255,.07); pointer-events: none; letter-spacing: -0.03em; }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px;
+  background: linear-gradient(90deg, var(--green) 0 33.3%, var(--yellow) 33.3% 66.6%, var(--white) 66.6% 100%); }
+.hero .wrap { position: relative; display: grid; gap: 18px; padding-block-end: 46px; }
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.tag { display: inline-flex; align-items: center; gap: 8px; transform: skewX(-12deg); padding: 6px 14px; font-family: var(--display); font-weight: 800; font-style: italic; text-transform: uppercase; font-size: 15px; letter-spacing: .02em; }
+.tag > * { transform: skewX(12deg); display: inline-flex; align-items: center; gap: 8px; }
+.tag.y { background: var(--yellow); color: var(--ink); }
+.tag.k { background: var(--ink); color: var(--white); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--red); display: inline-block; }
+@media (prefers-reduced-motion: no-preference) { .dot { animation: blink 1.4s ease-in-out infinite; } @keyframes blink { 50% { opacity: .25; } } }
+.eyebrow { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 14px; color: rgba(255,255,255,.85); }
+.title { margin: 0; font-size: clamp(54px, 10vw, 128px); text-shadow: 0 3px 0 var(--red-dark); }
+.title span { display: block; }
+.title .sub { font-size: .42em; color: var(--yellow); text-shadow: none; margin-top: .12em; }
+.take { margin: 0; max-width: 62ch; font-size: 17px; color: rgba(255,255,255,.95); }
+.take b { color: var(--yellow); font-weight: 600; }
+.upd { font-size: 13px; color: rgba(255,255,255,.85); }
+
+/* números */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 12px; margin-top: -26px; position: relative; z-index: 2; }
+.stat { background: var(--yellow); color: var(--ink); padding: 14px 18px 12px; transform: skewX(-6deg); box-shadow: 6px 6px 0 var(--ink); }
+.stat > * { transform: skewX(6deg); display: block; }
+.stat b { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 48px; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat span { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 14px; letter-spacing: .03em; margin-top: 2px; }
+
+/* seções */
+section { padding-block: 48px; }
+.sh { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 20px; margin-bottom: 18px; }
+.sh h2 { margin: 0; font-size: clamp(36px, 5.4vw, 60px); }
+.note { margin: 0; font-size: 14px; color: var(--muted); max-width: 60ch; }
+
+/* ranking */
+.rank-sec { background: var(--ink); color: var(--white); }
+.rank-sec .note { color: rgba(255,255,255,.7); }
+.rank-sec h2 em { color: var(--yellow); font-style: inherit; }
+.rank { display: grid; gap: 6px; }
+.row { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 14px; background: var(--ink-2); padding: 10px 16px 10px 0; }
+.row.first { background: var(--red); }
+.pos { font-family: var(--display); font-style: italic; font-weight: 900; font-size: 46px; line-height: 1; text-align: center; color: var(--yellow); }
+.row.first .pos { color: var(--white); }
+.mid { min-width: 0; display: grid; gap: 6px; }
+.htag { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1.05; word-break: break-word; }
+.track { height: 10px; background: rgba(255,255,255,.1); transform: skewX(-20deg); }
+.fill { height: 100%; background: var(--yellow); }
+.row.first .fill { background: var(--white); }
+.meta { font-size: 13px; color: rgba(255,255,255,.7); }
+.row.first .meta { color: rgba(255,255,255,.9); }
+.nums { text-align: right; white-space: nowrap; }
+.nums b { display: block; font-family: var(--display); font-style: italic; font-weight: 900; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.nums span { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: rgba(255,255,255,.75); }
+@media (max-width: 560px) { .row { grid-template-columns: 46px minmax(0,1fr); } .pos { font-size: 34px; } .nums { grid-column: 2; text-align: left; } .nums b { display: inline; font-size: 26px; margin-right: 6px; } .htag { font-size: 20px; } }
+
+/* linha do tempo */
+.day { display: grid; gap: 14px; margin-bottom: 34px; }
+.dayhead { display: flex; align-items: center; gap: 14px; }
+.dayhead .tag { font-size: 22px; padding: 6px 18px; }
+.dayhead .count { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 15px; color: var(--muted); letter-spacing: .04em; }
+.dayhead::after { content: ""; flex: 1; height: 3px; background: var(--ink); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 18px; }
+.post { display: grid; grid-template-rows: auto 1fr; background: var(--white); color: inherit; text-decoration: none; border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); transition: transform .15s ease, box-shadow .15s ease; min-width: 0; }
+.post:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--red); }
+.post:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+.thumb { position: relative; aspect-ratio: 4 / 5; background: var(--ink); overflow: hidden; max-width: 100%; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.badge { position: absolute; left: 8px; top: 8px; background: var(--panel); color: var(--fg); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
-.live { position: absolute; right: 8px; top: 8px; background: var(--live); color: var(--onlive); border-radius: 999px; padding: 2px 9px; font-size: 12px; }
-.body { padding: 12px 14px 14px; display: grid; gap: 8px; align-content: start; }
-.time { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.time b { font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
-.time span { font-size: 12px; color: var(--muted); text-align: right; }
-.who { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cap { font-size: 13px; margin: 0; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; border-top: 1px solid var(--line); padding-top: 8px; }
-.metrics div { display: grid; }
-.metrics b { font-family: var(--serif); font-weight: 400; font-size: 19px; font-variant-numeric: tabular-nums; }
-.metrics span { font-size: 12px; color: var(--muted); }
-.foot { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 4px; }
-.empty { color: var(--muted); font-size: 14px; padding: 18px 0; }
+.time { position: absolute; left: -6px; bottom: 14px; background: var(--red); color: var(--white); padding: 6px 16px 6px 18px; transform: skewX(-12deg); box-shadow: 4px 4px 0 var(--ink); }
+.time b { display: block; transform: skewX(12deg); font-family: var(--display); font-style: italic; font-weight: 900; font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; }
+.net { position: absolute; left: 10px; top: 10px; background: var(--white); color: var(--ink); font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 13px; padding: 3px 10px; letter-spacing: .03em; }
+.live { position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 6px; background: var(--red); color: var(--white); font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 13px; padding: 3px 10px; }
+.live .dot { background: var(--white); width: 7px; height: 7px; }
+.body { padding: 14px 16px 16px; display: grid; gap: 8px; align-content: start; }
+.who { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.who strong { font-family: var(--display); font-weight: 800; font-size: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.resend { justify-self: start; background: var(--yellow); color: var(--ink); font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 13px; padding: 2px 8px; }
+.cap { margin: 0; font-size: 14px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; border-top: 3px solid var(--ink); padding-top: 10px; margin-top: 2px; }
+.metrics b { display: block; font-family: var(--display); font-style: italic; font-weight: 900; font-size: 27px; line-height: 1; font-variant-numeric: tabular-nums; }
+.metrics span { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.metrics div:first-child b { color: var(--red); }
+
+footer { background: var(--red); color: var(--white); padding-block: 26px 30px; font-size: 13px; }
+footer .wrap { display: grid; gap: 6px; }
+footer strong { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: 22px; }
+.empty { padding: 20px 0; color: var(--muted); }
+.rank-sec .empty { color: rgba(255,255,255,.7); }
 </style>
 </head>
 <body>
-<main class="lv">
-  <header class="lv-head">
-    <span class="lv-eyebrow">Exército do Lula · canal de WhatsApp de André Janones</span>
-    <h1 class="lv-title">Live da Virada: o que o canal mandou subir e engajar</h1>
-    <p class="lv-take" id="take">Carregando os números…</p>
-    <span class="lv-upd"><i></i><span id="upd">Atualizado de hora em hora</span></span>
-  </header>
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <span class="tag y"><span><i class="dot"></i>Monitor ao vivo</span></span>
+      <span class="eyebrow">Canal Exército do Lula · André Janones</span>
+    </div>
+    <h1 class="title d"><span>Live da Virada</span><span class="sub">O que o canal mandou subir e engajar</span></h1>
+    <p class="take" id="take">Carregando os números…</p>
+    <span class="upd" id="upd">Atualizado de hora em hora</span>
+  </div>
+</header>
 
-  <section class="lv-stats" aria-label="Resumo">
-    <div class="lv-stat"><b id="s-hashtags">—</b><span>hashtags lançadas</span></div>
-    <div class="lv-stat"><b id="s-mencoes">—</b><span>menções no X, somadas</span></div>
-    <div class="lv-stat"><b id="s-posts">—</b><span>posts enviados para engajar</span></div>
-    <div class="lv-stat"><b id="s-curtidas">—</b><span>curtidas nesses posts, somadas</span></div>
-  </section>
+<div class="wrap">
+  <div class="stats" aria-label="Resumo">
+    <div class="stat"><b id="s-hashtags">—</b><span>hashtags lançadas</span></div>
+    <div class="stat"><b id="s-mencoes">—</b><span>menções no X</span></div>
+    <div class="stat"><b id="s-posts">—</b><span>posts para engajar</span></div>
+    <div class="stat"><b id="s-curtidas">—</b><span>curtidas nesses posts</span></div>
+  </div>
+</div>
 
-  <section class="lv-sec" id="hashtags">
-    <h2>Ranking das hashtags</h2>
-    <p class="lv-note">Menções e autores únicos no X desde o envio, medidos na Brandwatch. As hashtags não tinham volume antes de o canal pedir.</p>
-    <div class="lv-card"><div class="lv-tablewrap">
-      <table>
-        <thead><tr><th>#</th><th>Hashtag</th><th class="hide-narrow">Lançada em</th><th>Menções</th><th class="n">Autores únicos</th></tr></thead>
-        <tbody id="rank"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
-      </table>
-    </div></div>
-  </section>
+<section class="rank-sec" id="hashtags">
+  <div class="wrap">
+    <div class="sh">
+      <h2 class="d">Ranking das <em>hashtags</em></h2>
+      <p class="note">Menções e autores únicos no X desde o envio, medidos na Brandwatch. As hashtags não tinham volume antes de o canal pedir.</p>
+    </div>
+    <div class="rank" id="rank"><p class="empty">Carregando…</p></div>
+  </div>
+</section>
 
-  <section class="lv-sec" id="posts">
-    <h2>Timeline da live: posts que o canal mandou engajar</h2>
-    <p class="lv-note">Do mais recente para o mais antigo, pela hora em que o canal enviou o link. Os números de cada post são os atuais. Clique para abrir.</p>
-    <div class="lv-timeline" id="timeline"><p class="empty">Carregando…</p></div>
-  </section>
+<section id="posts">
+  <div class="wrap">
+    <div class="sh">
+      <h2 class="d">Timeline da live</h2>
+      <p class="note">Posts que o canal mandou engajar, do mais recente para o mais antigo, pela hora em que o link foi enviado. Os números de cada post são os atuais. Clique para abrir.</p>
+    </div>
+    <div id="timeline"><p class="empty">Carregando…</p></div>
+  </div>
+</section>
 
-  <footer class="foot">
-    <span>Período: desde o início do debate da Globo, 23/10/2026 às 21h (horário de Brasília). Hashtags: Brandwatch, menções arredondadas. Posts: curtidas, comentários e visualizações lidos nos próprios posts.</span>
-    <span>A página recarrega os números sozinha a cada 10 minutos.</span>
-  </footer>
-</main>
+<footer>
+  <div class="wrap">
+    <strong>Atualiza de hora em hora</strong>
+    <span>Período: desde o início do debate da Globo, 23/10/2026 às 21h (horário de Brasília). Hashtags: Brandwatch, menções arredondadas. Posts: curtidas, comentários e visualizações lidos nos próprios posts. A página recarrega os números sozinha a cada 10 minutos.</span>
+  </div>
+</footer>
 
 <script>
 (() => {
   const nf = new Intl.NumberFormat('pt-BR');
   const cf = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
   const num = (v) => (v === null || v === undefined || v === '' ? '—' : Number(v) >= 10000 ? cf.format(Number(v)) : nf.format(Number(v)));
-  const when = (s) => { const m = /(\d{4})-(\d\d)-(\d\d)[ T](\d\d):(\d\d)/.exec(s || ''); return m ? `${m[3]}/${m[2]} ${m[4]}h${m[5]}` : '—'; };
+  const when = (s) => { const m = /(\d{4})-(\d\d)-(\d\d)[ T](\d\d):(\d\d)/.exec(s || ''); return m ? `${m[3]}/${m[2]} às ${m[4]}h${m[5]}` : '—'; };
   const whenUtc = (s) => { const d = new Date(s); if (!s || isNaN(d)) return null; const p = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(d); const g = (t) => (p.find((x) => x.type === t) || {}).value; return `${g('day')}/${g('month')} às ${g('hour')}h${g('minute')}`; };
   const DIAS = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
   const $ = (id) => document.getElementById(id);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
 
   function drawRank(H) {
-    const tb = $('rank'); tb.replaceChildren();
-    if (!H.length) { const tr = tb.insertRow(); const td = tr.insertCell(); td.colSpan = 5; td.className = 'empty'; td.textContent = 'Nenhuma hashtag lançada ainda.'; return; }
+    const box = $('rank'); box.replaceChildren();
+    if (!H.length) { box.append(el('p', 'empty', 'Nenhuma hashtag lançada ainda.')); return; }
     const rows = [...H].sort((a, b) => (a.posicao || 99) - (b.posicao || 99));
     const max = Math.max(1, ...rows.map((r) => Number(r.mencoes) || 0));
     rows.forEach((r, i) => {
-      const tr = tb.insertRow();
-      tr.insertCell().append(el('span', 'pos', String(r.posicao)));
-      const t = tr.insertCell(); t.className = 'tag'; t.textContent = r.hashtag;
-      const w = tr.insertCell(); w.className = 'hide-narrow'; w.textContent = when(r.lancada_em);
-      const c = tr.insertCell(); c.className = 'barcell';
-      const bar = el('div', 'bar'); const f = el('i', i === 0 ? 'top' : ''); f.style.width = `${(70 * (Number(r.mencoes) || 0)) / max}%`;
-      bar.append(f, el('em', '', num(r.mencoes))); c.append(bar);
-      const a = tr.insertCell(); a.className = 'n'; a.textContent = num(r.autores_unicos);
+      const row = el('div', i === 0 ? 'row first' : 'row');
+      const mid = el('div', 'mid');
+      const track = el('div', 'track'); const fill = el('div', 'fill'); fill.style.width = `${(100 * (Number(r.mencoes) || 0)) / max}%`; track.append(fill);
+      mid.append(el('div', 'htag', r.hashtag), track, el('div', 'meta', `Lançada em ${when(r.lancada_em)} · ${num(r.autores_unicos)} autores únicos`));
+      const nums = el('div', 'nums'); nums.append(el('b', '', num(r.mencoes)), el('span', '', 'menções'));
+      row.append(el('div', 'pos', String(r.posicao)), mid, nums);
+      box.append(row);
     });
   }
 
@@ -155,18 +198,21 @@ tr:last-child td { border-bottom: none; }
     const a = el('a', 'post'); a.href = /^https:\/\//.test(r.link || '') ? r.link : '#'; a.target = '_blank'; a.rel = 'noopener';
     const th = el('div', 'thumb');
     if (typeof r.imagem === 'string' && r.imagem.startsWith('data:image/')) { const img = el('img'); img.src = r.imagem; img.alt = `Post de ${r.autor || r.rede || ''}`; img.loading = 'lazy'; th.append(img); }
-    th.append(el('span', 'badge', [r.rede, r.formato].filter(Boolean).join(' · ')));
-    if (r.assistindo_agora) th.append(el('span', 'live', `${num(r.assistindo_agora)} ao vivo`));
-    const b = el('div', 'body');
+    th.append(el('span', 'net', [r.rede, r.formato].filter(Boolean).join(' · ')));
+    if (r.assistindo_agora) { const lv = el('span', 'live'); lv.append(el('i', 'dot'), document.createTextNode(`${num(r.assistindo_agora)} ao vivo`)); th.append(lv); }
     const tm = /(\d\d):(\d\d)$/.exec(String(r.enviado_em || ''));
-    const time = el('div', 'time');
-    time.append(el('b', '', tm ? `${tm[1]}h${tm[2]}` : '—'), el('span', '', Number(r.vezes_no_canal) > 1 ? `enviado pelo canal · reenviado, ${r.vezes_no_canal} vezes no total` : 'enviado pelo canal'));
+    const time = el('div', 'time'); time.append(el('b', '', tm ? `${tm[1]}h${tm[2]}` : '—')); th.append(time);
+    const b = el('div', 'body');
+    const who = el('div', 'who'); who.append(el('strong', '', r.autor || r.rede || ''), el('span', '', 'enviado pelo canal'));
+    b.append(who);
+    if (Number(r.vezes_no_canal) > 1) b.append(el('span', 'resend', `Reenviado · ${r.vezes_no_canal} vezes`));
+    b.append(el('p', 'cap', r.legenda || ''));
     const m = el('div', 'metrics');
     const hasC = r.comentarios !== null && r.comentarios !== undefined;
     m.append(metric(r.curtidas, 'curtidas'));
     m.append(hasC ? metric(r.comentarios, 'comentários') : metric(r.visualizacoes, 'visualizações'));
     m.append(hasC ? metric(r.visualizacoes, r.rede === 'YouTube' ? 'visualizações' : 'reproduções') : el('div'));
-    b.append(time, el('div', 'who', r.autor || r.rede || ''), el('p', 'cap', r.legenda || ''), m);
+    b.append(m);
     a.append(th, b); return a;
   }
 
@@ -177,11 +223,12 @@ tr:last-child td { border-bottom: none; }
     const groups = new Map();
     rows.forEach((r) => { const k = String(r.enviado_em || '').slice(0, 10); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(r); });
     groups.forEach((list, day) => {
-      const sec = el('div', 'lv-day'); const head = el('div', 'lv-dayhead');
+      const sec = el('div', 'day'); const head = el('div', 'dayhead');
       const m = /(\d{4})-(\d\d)-(\d\d)/.exec(day);
       const dn = m ? DIAS[new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).getUTCDay()] : '';
-      head.append(el('strong', '', m ? `${dn}, ${m[3]}/${m[2]}` : 'Sem data'), el('span', '', `${list.length} ${list.length === 1 ? 'post' : 'posts'}`));
-      const g = el('div', 'lv-grid'); list.forEach((r) => g.append(card(r)));
+      const tag = el('span', 'tag k'); tag.append(el('span', '', m ? `${dn} ${m[3]}/${m[2]}` : 'Sem data'));
+      head.append(tag, el('span', 'count', `${list.length} ${list.length === 1 ? 'post' : 'posts'}`));
+      const g = el('div', 'grid'); list.forEach((r) => g.append(card(r)));
       sec.append(head, g); box.append(sec);
     });
   }
@@ -200,9 +247,9 @@ tr:last-child td { border-bottom: none; }
       $('s-posts').textContent = nf.format(P.length);
       $('s-curtidas').textContent = num(curtidas);
       const top = [...H].sort((a, b) => (b.mencoes || 0) - (a.mencoes || 0))[0];
-      $('take').textContent = top
-        ? `Desde o início do debate da Globo (23/10, 21h), o canal lançou ${H.length} hashtags e mandou engajar ${P.length} posts. A mais forte no X é ${top.hashtag}, com ${num(top.mencoes)} menções.`
-        : `Desde o início do debate da Globo (23/10, 21h), o canal mandou engajar ${P.length} posts.`;
+      const take = $('take'); take.replaceChildren();
+      take.append(document.createTextNode(`Desde o início do debate da Globo (23/10, 21h), o canal lançou ${H.length} hashtags e mandou engajar ${P.length} posts.`));
+      if (top) { take.append(document.createTextNode(' A mais forte no X é ')); take.append(el('b', '', top.hashtag)); take.append(document.createTextNode(`, com ${num(top.mencoes)} menções.`)); }
       const at = [...H, ...P].map((r) => r.atualizado_em).filter(Boolean).sort().pop();
       const w = whenUtc(at); $('upd').textContent = w ? `Números atualizados em ${w} · atualiza de hora em hora` : 'Atualizado de hora em hora';
       drawRank(H); drawTimeline(P);
